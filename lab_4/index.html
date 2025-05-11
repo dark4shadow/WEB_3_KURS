@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My - CV</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+
+</head>
+<body>
+    <button id="theme-toggle" title="Змінити тему">🌓</button>
+    <main id="cv-container">
+           <div class="left-column">
+            <header >
+                <h1 id="name">Мартинів Антон</h1>
+                <h2 id="title">Cybersecurity Student</h2>
+            </header>
+
+            <section id="about">
+                <h2 class="section-header">About Me</h2>
+                <blockquote id="motto">"Use google as a pro"</blockquote>
+                <p class="description">
+                    А також люблю займатися<br>
+                    пентестингом різних<br>
+                    застосунків/сайтів та<br>
+                    досліджувати нові вразливості
+                </p>
+            </section>
+
+            <section id="contact">
+                <h2 class="section-header">Contact</h2>
+                <div class="contact-info">
+                    <p>
+                        +380 987 440 844<br>
+                        antonkit135@gmail.com<br>
+                        Львів, вул. Городоцька, 274
+                    </p>
+                </div>
+            </section>
+
+            <section id="skills">
+                <h2 class="section-header">Skills</h2>
+                <ul class="skills-list">
+                    <li>Front-end (basic)</li>
+                    <li>Programming</li>
+                    <li>Ethical Hacking</li>
+                    <li>Networking (basic)</li>
+                </ul>
+            </section>
+
+            <section id="language">
+                <h2 class="section-header">Language</h2>
+                <p>English B1</p>
+                <p>Ukrainian C1</p>
+            </section>
+        </div>
+
+        <div class="right-column">
+            <section id="education">
+                <h2 class="section-header">Education</h2>
+                <div class="education-item">
+                    <h3>2022–2026 (очікується)</h3>
+                    <p><strong>Lviv Polytechnic National University</strong><br>
+                    Bachelor of CyberSecurity</p>
+                </div>
+            </section>
+
+            <section id="experience">
+                <h2 class="section-header">Experience</h2>
+                <ul class="experience-list">
+                    <li class="experience-item">
+                        В даний час працюю на проєктом котрий повинен моніторити, через використання API, дві торгові площадки з товарами, 
+                        нормалізовувати їхні назви, заносити в базу даних (SQLite). Та аналіз товарів буде вібравлятся в телеграм.
+                    </li>
+                    <li class="experience-item">
+                        Спроба реалізації прототипу мережефого черв'я, котрий повинен в теорії розповодитись в локальній мережі та заразати певний тип 
+                        клієнтів, через ARP poisoning, DNS spoofing та використання різних вразливостей/CVE для обходу систем захисту
+                    </li>
+                    <li class="experience-item">
+                        Підключення камери на базі ESP32 до Flipper Zero стало відправною точкою в моєму знайомстві з напрямом IoT. Незважаючи на 
+                        відносну простоту реалізації, цей проєкт відкрив для мене нову сферу.
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
