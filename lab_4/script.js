@@ -18,15 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('cv-container').classList.add('dark-theme');
     }
 
-    // Автоматичне перемикання теми за часом
     const currentHour = new Date().getHours();
     const isDayTime = currentHour >= 7 && currentHour < 21;
     const themeToApply = isDayTime ? 'light' : 'dark';
+    //const savedTheme = localStorage.getItem('theme') || 'light';
 
-    if (themeToApply === 'dark' && savedTheme === 'light') {
-        document.body.classList.add('dark-theme');
-        document.getElementById('cv-container').classList.add('dark-theme');
-        localStorage.setItem('theme', 'dark');
+    if ((themeToApply === 'dark' && savedTheme === 'light') || (themeToApply === 'light' && savedTheme === 'dark')) {
+        document.body.classList.toggle('dark-theme');
+        document.getElementById('cv-container').classList.toggle('dark-theme');
+        localStorage.setItem('theme', themeToApply);
     }
 });
 
@@ -58,7 +58,7 @@ fetch(`https://jsonplaceholder.typicode.com/posts/${variantNumber}/comments`)
     .then(comments => {
         const commentsSection = document.createElement('section');
         commentsSection.innerHTML = `
-            <h2 class="section-header">Відгуки</h2>
+            <h2 class="section-header">Feedback</h2>
             <ul class="experience-list">
                 ${comments.map(comment => `
                     <li class="experience-item">
