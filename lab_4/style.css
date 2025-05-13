@@ -116,36 +116,6 @@ body {
     margin-bottom: 0.25rem;
 }
 
-// Адаптивність 
-@media (max-width: 768px) {
-    #cv-container {
-        grid-template-columns: 1fr;
-    }
-
-    .left-column, .right-column {
-        padding: 0;
-    }
-
-    .experience-item:hover {
-        transform: none;
-        font-size: inherit;
-    }
-}
-
-@media (max-width: 480px) {
-    body {
-        padding: 0;
-    }
-
-    #cv-container {
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .left-column section, .right-column section, header {
-        padding: 1rem;
-    }
-}
 
 
 /* Dark theme */
@@ -190,7 +160,7 @@ body.dark-theme #theme-toggle, body.dark-theme #open-feedback {
     cursor: pointer;
     font-size: 1.2rem;
     transition: all 0.3s ease;
-    z-index: 1000; /* Перекриває інші елементи */
+    z-index: 1000;
 }
 
 body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, body.dark-theme #open-feedback:hover {
@@ -260,5 +230,127 @@ body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, 
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
+}
+
+
+/* Великі екрани (більше 1200px) */
+@media screen and (min-width: 1200px) {
+    #cv-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}
+
+/* Планшети і менші екрани (до 1024px) */
+@media screen and (max-width: 1024px) {
+    #cv-container {
+        margin: 1rem;
+        grid-template-columns: 250px 1fr;
+    }
+
+    .left-column section, 
+    .right-column section {
+        padding: 1.25rem;
+    }
+}
+
+/* Планшети (до 768px) */
+@media screen and (max-width: 768px) {
+    #cv-container {
+        grid-template-columns: 1fr;
+        margin: 0.5rem;
+    }
+
+    .left-column {
+        position: relative;
+    }
+
+    .skills-list li {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .experience-item {
+        padding: 0.8rem;
+    }
+
+    #feedback-modal {
+        width: 90%;
+        padding: 1.5rem;
+    }
+}
+
+/* Мобільні пристрої (до 480px) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+
+    #cv-container {
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .left-column section, 
+    .right-column section, 
+    header {
+        padding: 1rem;
+    }
+
+    #name {
+        font-size: 1.3rem;
+    }
+
+    #title {
+        font-size: 0.9rem;
+    }
+
+    .section-header {
+        font-size: 1.1rem;
+    }
+
+    .experience-item {
+        font-size: 0.85rem;
+    }
+
+    #theme-toggle,
+    #open-feedback {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px;
+        font-size: 1rem;
+    }
+
+    #open-feedback {
+        bottom: 60px;
+    }
+
+    #feedback-modal {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    #feedback-modal input, 
+    #feedback-modal textarea {
+        padding: 0.4rem;
+        margin: 0.3rem 0;
+    }
+}
+
+/* Маленькі мобільні пристрої (до 320px) */
+@media screen and (max-width: 320px) {
+    .skills-list li {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .section-header {
+        font-size: 1rem;
+    }
+
+    .experience-item {
+        padding: 0.6rem;
+    }
 }
 

@@ -106,3 +106,37 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackModal.style.display = feedbackModal.style.display === 'block' ? 'none' : 'block';
     });
 });
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Load environment variables
+    const response = await fetch('.env');
+    const envFile = await response.text();
+    const endpoint = envFile.match(/FORMSPREE_ENDPOINT\s*=\s*"([^"]+)"/)[1];
+
+    // Handle form submission
+    const form = document.getElementById('feedback-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        try {
+            const formData = new FormData(form);
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                alert('Повідомлення успішно відправлено!');
+                form.reset();
+                document.getElementById('feedback-modal').style.display = 'none';
+            } else {
+                throw new Error('Помилка відправки форми');
+            }
+        } catch (error) {
+            alert('Помилка: ' + error.message);
+        }
+    });
+});

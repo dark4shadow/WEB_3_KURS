@@ -90,7 +90,7 @@
         <!-- Тут відобразиться інформація -->
     </footer>
     <div id="feedback-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.2);">
-        <form action="https://formspree.io/f/your_secret" method="POST">
+        <form id="feedback-form">
             <input type="text" name="name" placeholder="Ім'я" required><br>
             <input type="email" name="email" placeholder="Email" required><br>
             <input type="tel" name="phone" placeholder="Телефон"><br>
@@ -99,5 +99,6 @@
             <button type="button" onclick="document.getElementById('feedback-modal').style.display='none'">Скасувати</button>
         </form>
     </div>
+    
 </body>
 </html>
