@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My - CV</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="script.js"></script>
-
 </head>
 <body>
-    <button id="theme-toggle" title="Змінити тему">🌓</button>
-    <button id="open-feedback" title="Відкрити форму">✉️</button>
+
+    <button class="fixed-button"id="theme-toggle" title="Змінити тему">🌓</button>
+    <button class="fixed-button"id="open-feedback" title="Відкрити форму">✉️</button>
+    <button class="fixed-button"id="export-pdf" title="Експорт в PDF">📄</button>
+    <button class="fixed-button"id="print-cv" title="Друкувати CV">🖨️</button>
     <main id="cv-container">
            <div class="left-column">
             <header >
@@ -83,6 +86,17 @@
                         відносну простоту реалізації, цей проєкт відкрив для мене нову сферу.
                     </li>
                 </ul>
+            </section>
+
+            <section id="github-section" class="loading">
+                <div class="toggle-header">
+                    <h2 class="section-header">GitHub Activity</h2>
+                </div>
+                <div class="github-info">
+                    <div class="repo-list">
+                        <p>Loading GitHub data...</p>
+                    </div>
+                </div>
             </section>
         </div>
     </main>

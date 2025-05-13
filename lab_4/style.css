@@ -1,7 +1,18 @@
+/* Base styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #f6ad55;
+    --dark-bg: #1a1a1a;
+    --dark-secondary: #2d2d2d;
+    --dark-border: #404040;
+    --light-text: #e0e0e0;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -11,31 +22,39 @@ body {
     padding: 1rem;
 }
 
+/* Layout */
 #cv-container {
     max-width: 1000px;
     margin: 0 auto;
     background: white;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 20px var(--shadow-light);
     border-radius: 8px;
     overflow: hidden;
     display: grid;
     grid-template-columns: 300px 1fr;
 }
 
+/* Column styles */
 .left-column {
     background: #2a4365;
     color: white;
 }
 
-.left-column section, .right-column section, header {
+.left-column section, 
+.right-column section, 
+header {
     padding: 1.5rem;
+}
+
+.left-column section {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .right-column section {
-    border-bottom-color: #edf2f7;
+    border-bottom: 1px solid #edf2f7;
 }
 
+/* Typography */
 .section-header {
     font-size: 1.2rem;
     text-transform: uppercase;
@@ -51,22 +70,25 @@ body {
 
 #title {
     font-size: 1rem;
-    color: #f6ad55;
+    color: var(--primary-color);
     font-weight: normal;
 }
 
 #motto {
     font-style: italic;
-    border-left: 3px solid #f6ad55;
+    border-left: 3px solid var(--primary-color);
     padding-left: 0.75rem;
     margin: 1rem 0;
 }
 
-.contact-info, .description {
+.contact-info, 
+.description {
     font-size: 0.9rem;
     line-height: 1.6;
+    text-decoration: none;
 }
 
+/* Skills section */
 .skills-list {
     list-style: none;
     margin-top: 0.75rem;
@@ -83,10 +105,11 @@ body {
 }
 
 .skills-list li:hover {
-    background: #f6ad55;
+    background: var(--primary-color);
     transform: translateX(3px);
 }
 
+/* Experience section */
 .experience-list {
     list-style: none;
 }
@@ -102,10 +125,11 @@ body {
 
 .experience-item:hover {
     background: white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px var(--shadow-light);
     transform: translateY(-2px);
 }
 
+/* Education section */
 .education-item {
     margin-bottom: 1.5rem;
 }
@@ -116,46 +140,12 @@ body {
     margin-bottom: 0.25rem;
 }
 
-
-
-/* Dark theme */
-
-body.dark-theme {
-    background: #1a1a1a;
-    color: #e0e0e0;
-}
-
-body.dark-theme #cv-container {
-    background: #2d2d2d;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-}
-
-body.dark-theme .right-column section {
-    border-color: #404040;
-}
-
-body.dark-theme .left-column {
-    background: #1a1a1a;
-}
-
-body.dark-theme .experience-item {
-    background: #2d2d2d;
-    border-left: 3px solid #f6ad55;
-}
-body.dark-theme .experience-item:hover {
-    background: #3a3a3a;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-body.dark-theme #theme-toggle, body.dark-theme #open-feedback {
-    background: white;
-}
-
-#theme-toggle {
+/* Fixed buttons */
+.fixed-button {
     position: fixed;
-    bottom: 20px;
     right: 20px;
     background: grey;
-    padding: 10px 10px;
+    padding: 10px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 1.2rem;
@@ -163,27 +153,17 @@ body.dark-theme #theme-toggle, body.dark-theme #open-feedback {
     z-index: 1000;
 }
 
-body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, body.dark-theme #open-feedback:hover {
+#theme-toggle { bottom: 20px; }
+#open-feedback { bottom: 80px; }
+#export-pdf { bottom: 140px; }
+#print-cv { bottom: 200px; }
+
+.fixed-button:hover {
     transform: scale(1.1);
-    background: #f6ad55;
+    background: var(--primary-color);
 }
 
-/* Стилі для кнопки відкриття форми */
-#open-feedback {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    background: grey;
-    padding: 10px 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    z-index: 1000; /* Перекриває інші елементи */
-}
-
-
-/* Стилі для модального вікна */
+/* Feedback modal */
 #feedback-modal {
     position: fixed;
     top: 50%;
@@ -192,14 +172,13 @@ body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, 
     background: white;
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    //z-index: 1000; /* Важливо! */
+    box-shadow: 0 0 20px var(--shadow-light);
     width: 80%;
     max-width: 400px;
 }
 
 #feedback-modal button {
-    background: #f6ad55;
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -209,16 +188,6 @@ body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, 
     transition: all 0.3s ease;
 }
 
-#feedback-modal button {
-    background: #f6ad55;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
 #feedback-modal button:hover {
     background: #e67e22;
 }
@@ -232,125 +201,223 @@ body.dark-theme #theme-toggle:hover, #theme-toggle:hover, #open-feedback:hover, 
     border-radius: 4px;
 }
 
+/* GitHub section */
+#github-section {
+    padding: 1.5rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
 
-/* Великі екрани (більше 1200px) */
-@media screen and (min-width: 1200px) {
+.repo-list {
+    list-style: none;
+    margin-top: 1rem;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+    max-height: 1000px;
+}
+
+.repo-list.collapsed {
+    max-height: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+.repo-item {
+    padding: 1rem;
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+/* Додати до стилів GitHub секції */
+.repo-item a {
+    color: inherit !important; 
+    text-decoration: none !important;
+    font-size: 1rem;
+    font-weight: 500; 
+    transition: color 0.3s ease;
+}
+
+.repo-item a:hover {
+    text-decoration: underline !important;
+    color: var(--primary-color) !important;
+}
+
+.repo-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.repo-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+/* Toggle GitHub section */
+.toggle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.toggle-github {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.toggle-github:hover {
+    background: rgba(246, 173, 85, 0.1);
+}
+
+.toggle-github::before {
+    content: '▼';
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.toggle-github.collapsed::before {
+    transform: rotate(-90deg);
+}
+
+#github-section .repo-list {
+    max-height: 1000px;
+    opacity: 1;
+    transition: all 0.3s ease-out !important;
+}
+
+#github-section .repo-list.collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+
+/* Dark theme */
+body.dark-theme {
+    background: var(--dark-bg);
+    color: var(--light-text);
+}
+
+body.dark-theme #cv-container {
+    background: var(--dark-secondary);
+    box-shadow: 0 5px 20px var(--shadow-dark);
+}
+
+body.dark-theme .right-column section {
+    border-color: var(--dark-border);
+}
+
+body.dark-theme .left-column {
+    background: var(--dark-bg);
+}
+
+body.dark-theme .experience-item {
+    background: var(--dark-secondary);
+    border-left: 3px solid var(--primary-color);
+}
+
+body.dark-theme .experience-item:hover {
+    background: #3a3a3a;
+}
+
+body.dark-theme .fixed-button {
+    background: white;
+}
+
+body.dark-theme #github-section {
+    background: var(--dark-secondary);
+}
+
+body.dark-theme .repo-item {
+    background: #3a3a3a;
+    border-color: var(--dark-border);
+    color: var(--light-text);
+}
+
+/* Loading animation */
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    margin: 20px auto;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Print styles */
+@media print {
+    body {
+        padding: 0;
+        background: white;
+    }
+
     #cv-container {
-        max-width: 1200px;
-        margin: 0 auto;
+        box-shadow: none;
+        margin: 0;
+    }
+
+    .fixed-button,
+    #feedback-modal {
+        display: none !important;
+    }
+
+    .experience-item {
+        break-inside: avoid;
     }
 }
 
-/* Планшети і менші екрани (до 1024px) */
+/* Responsive styles */
 @media screen and (max-width: 1024px) {
     #cv-container {
         margin: 1rem;
         grid-template-columns: 250px 1fr;
     }
-
-    .left-column section, 
-    .right-column section {
-        padding: 1.25rem;
-    }
 }
 
-/* Планшети (до 768px) */
 @media screen and (max-width: 768px) {
     #cv-container {
         grid-template-columns: 1fr;
         margin: 0.5rem;
     }
-
-    .left-column {
-        position: relative;
-    }
-
-    .skills-list li {
-        padding: 0.3rem 0.6rem;
-        font-size: 0.8rem;
-    }
-
-    .experience-item {
-        padding: 0.8rem;
-    }
-
-    #feedback-modal {
-        width: 90%;
-        padding: 1.5rem;
-    }
 }
 
-/* Мобільні пристрої (до 480px) */
 @media screen and (max-width: 480px) {
-    body {
-        padding: 0;
-    }
-
+    body { padding: 0; }
+    
     #cv-container {
         margin: 0;
         border-radius: 0;
         box-shadow: none;
     }
 
-    .left-column section, 
-    .right-column section, 
-    header {
-        padding: 1rem;
-    }
-
-    #name {
-        font-size: 1.3rem;
-    }
-
-    #title {
-        font-size: 0.9rem;
-    }
-
-    .section-header {
-        font-size: 1.1rem;
-    }
-
-    .experience-item {
-        font-size: 0.85rem;
-    }
-
-    #theme-toggle,
-    #open-feedback {
+    .fixed-button {
         bottom: 10px;
         right: 10px;
         padding: 8px;
         font-size: 1rem;
-    }
-
-    #open-feedback {
-        bottom: 60px;
-    }
-
-    #feedback-modal {
-        width: 95%;
-        padding: 1rem;
-    }
-
-    #feedback-modal input, 
-    #feedback-modal textarea {
-        padding: 0.4rem;
-        margin: 0.3rem 0;
-    }
-}
-
-/* Маленькі мобільні пристрої (до 320px) */
-@media screen and (max-width: 320px) {
-    .skills-list li {
-        padding: 0.2rem 0.4rem;
-        font-size: 0.75rem;
-    }
-
-    .section-header {
-        font-size: 1rem;
-    }
-
-    .experience-item {
-        padding: 0.6rem;
     }
 }
 
