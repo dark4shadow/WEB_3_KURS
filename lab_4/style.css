@@ -421,3 +421,146 @@ body.dark-theme .repo-item {
     }
 }
 
+/* PDF Export specific styles - Updated to prevent content cutting */
+.pdf-export-mode {
+    transform: none !important;
+    position: static !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important; /* Changed from hidden to visible */
+    page-break-inside: avoid;
+    background: white !important;
+    display: grid !important;
+    grid-template-columns: 70mm 1fr !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important; /* Increased from 1.3 to 1.4 */
+}
+
+.pdf-export-mode .left-column {
+    background: #2a4365 !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-inside: avoid;
+}
+
+.pdf-export-mode .right-column {
+    background: white !important;
+    color: black !important;
+    page-break-inside: avoid;
+    padding-right: 10px !important; /* Added padding to prevent content from touching edge */
+}
+
+.pdf-export-mode .left-column section,
+.pdf-export-mode .right-column section {
+    padding: 10px !important; /* Increased from 8px to 10px */
+    border-bottom: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 5px !important; /* Increased from 0 to 5px */
+}
+
+.pdf-export-mode header {
+    padding: 10px !important;
+}
+
+.pdf-export-mode .section-header {
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    margin-bottom: 5px !important;
+    text-transform: uppercase;
+}
+
+.pdf-export-mode #name {
+    font-size: 1.4rem !important;
+    font-weight: bold !important;
+    margin-bottom: 2px !important;
+}
+
+.pdf-export-mode #title {
+    font-size: 1.1rem !important;
+    color: #f6ad55 !important;
+    margin-bottom: 5px !important;
+}
+
+.pdf-export-mode .experience-item {
+    background: #f8fafc !important;
+    border-left: 2px solid #4299e1 !important;
+    padding: 8px !important; /* Increased from 6px to 8px */
+    margin-bottom: 8px !important; /* Increased from 4px to 8px */
+    page-break-inside: avoid;
+    font-size: 0.9rem !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    width: 95% !important; /* Added to prevent right edge cutting */
+}
+
+/* Ensure text content doesn't overflow its container */
+.pdf-export-mode .experience-item,
+.pdf-export-mode .description,
+.pdf-export-mode .contact-info,
+.pdf-export-mode .education-item {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+}
+
+.pdf-export-mode .skills-list {
+    margin-top: 5px !important;
+}
+
+.pdf-export-mode .skills-list li {
+    background: rgba(255, 255, 255, 0.2) !important;
+    display: inline-block !important;
+    padding: 2px 6px !important;
+    border-radius: 8px !important;
+    margin: 0 2px 3px 0 !important;
+    font-size: 0.9rem !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+.pdf-export-mode .contact-info,
+.pdf-export-mode .description {
+    font-size: 0.9rem !important;
+    line-height: 1.3 !important;
+}
+
+.pdf-export-mode .education-item {
+    margin-bottom: 8px !important;
+    page-break-inside: avoid;
+}
+
+.pdf-export-mode .education-item h3 {
+    font-size: 0.9rem !important;
+    color: #4299e1 !important;
+    margin-bottom: 2px !important;
+}
+
+/* Hide elements during PDF export */
+.pdf-export-mode #github-section,
+.pdf-export-mode .feedback-section,
+.pdf-export-mode #browser-info,
+.pdf-export-mode .fixed-button {
+    display: none !important;
+}
+
+/* Ensure text is visible and properly sized */
+.pdf-export-mode * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+}
+
+.pdf-export-mode #motto {
+    font-style: italic !important;
+    border-left: 2px solid #f6ad55 !important;
+    padding-left: 5px !important;
+    margin: 5px 0 !important;
+    font-size: 0.9rem !important;
+}
+
