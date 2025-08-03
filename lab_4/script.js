@@ -161,159 +161,80 @@ async function loadGitHubProfile() {
 }   
 
 function exportToPDF() {
-    // Store references to sections we want to hide
-    const githubSection = document.getElementById('github-section');
-    const feedbackSections = document.querySelectorAll('.right-column section');
-    const browserInfoFooter = document.getElementById('browser-info');
-    const fixedButtons = document.querySelectorAll('.fixed-button');
+    // Create a clone of the CV container to prevent modifying the original
+    const cvContainer = document.getElementById('cv-container');
+    const clone = cvContainer.cloneNode(true);
     
-    // Find feedback section by checking content
-    let feedbackSection = null;
-    feedbackSections.forEach(section => {
+    // Apply PDF export styles to the clone
+    clone.classList.add('pdf-export-mode');
+    
+    // Remove elements that shouldn't be in the PDF
+    const elementsToRemove = ['github-section', 'browser-info', 'feedback-modal'];
+    elementsToRemove.forEach(id => {
+        const element = clone.querySelector('#' + id);
+        if (element) element.remove();
+    });
+    
+    // Remove feedback section by finding it through its header
+    const sections = clone.querySelectorAll('section');
+    sections.forEach(section => {
         const header = section.querySelector('h2');
         if (header && header.textContent.includes('Feedback')) {
-            feedbackSection = section;
+            section.remove();
         }
     });
     
-    // Store original display states
-    const originalStates = {
-        github: githubSection ? githubSection.style.display : null,
-        feedback: feedbackSection ? feedbackSection.style.display : null,
-        footer: browserInfoFooter ? browserInfoFooter.style.display : null,
-        buttons: []
+    // Append the clone to body but make it invisible
+    clone.style.position = 'absolute';
+    clone.style.left = '-9999px';
+    document.body.appendChild(clone);
+    
+    // Show loading indicator
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'pdf-loading';
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: rgba(0,0,0,0.8); color: white; padding: 20px; 
+                    border-radius: 8px; z-index: 10000; text-align: center;">
+            <div class="loading-spinner" style="margin: 0 auto 10px; width: 30px; height: 30px;"></div>
+            <p>Generating PDF...</p>
+        </div>
+    `;
+    document.body.appendChild(loadingDiv);
+    
+    // Configure PDF options
+    const opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'Anton-Martyniv_CV.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            logging: true,
+            letterRendering: true
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     
-    // Temporarily hide non-essential sections
-    try {
-        // Hide sections
-        if (githubSection) githubSection.style.display = 'none';
-        if (feedbackSection) feedbackSection.style.display = 'none';
-        if (browserInfoFooter) browserInfoFooter.style.display = 'none';
-        
-        // Hide fixed buttons
-        fixedButtons.forEach((button, index) => {
-            originalStates.buttons[index] = button.style.display;
-            button.style.display = 'none';
-        });
-        
-        // Get the CV container and apply "print mode" class
-        const element = document.getElementById('cv-container');
-        element.classList.add('pdf-export-mode');
-        
-        // Configure PDF generation options for better quality
-        const opt = {
-            margin: [10, 10, 10, 10],
-            filename: 'Anton-Martyniv_CV.pdf',
-            image: { 
-                type: 'jpeg', 
-                quality: 0.98,
-                enablePrintMediaType: true
-            },
-            html2canvas: { 
-                scale: 3, // Higher scale for better quality
-                useCORS: true,
-                letterRendering: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                removeContainer: false,
-                async: true,
-                foreignObjectRendering: true,
-                imageTimeout: 15000,
-                logging: false,
-                onclone: function(clonedDoc) {
-                    // Ensure fonts are loaded in cloned document
-                    const clonedElement = clonedDoc.getElementById('cv-container');
-                    if (clonedElement) {
-                        clonedElement.style.fontFamily = 'Arial, sans-serif';
-                        clonedElement.style.fontSize = '12px';
-                        clonedElement.style.lineHeight = '1.4';
-                    }
-                }
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait',
-                compress: false, // Better quality
-                precision: 16,
-                userUnit: 1.0,
-                hotfixes: ["px_scaling"]
-            },
-            pagebreak: { 
-                mode: ['avoid-all', 'css'],
-                before: '.page-break-before',
-                after: '.page-break-after',
-                avoid: ['.left-column', '.right-column', '.experience-item', '.education-item', 'section']
-            }
-        };
-        
-        // Show loading indicator
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'pdf-loading';
-        loadingDiv.innerHTML = `
-            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                        background: rgba(0,0,0,0.8); color: white; padding: 20px; 
-                        border-radius: 8px; z-index: 10000; text-align: center;">
-                <div class="loading-spinner" style="margin: 0 auto 10px; width: 30px; height: 30px;"></div>
-                <p>Generating PDF...</p>
-            </div>
-        `;
-        document.body.appendChild(loadingDiv);
-        
-        // Generate PDF with improved settings
-        html2pdf().set(opt).from(element).toPdf().get('pdf').then(function (pdf) {
-            // Add metadata
-            pdf.setProperties({
-                title: 'Anton Martyniv - CV',
-                subject: 'Curriculum Vitae',
-                author: 'Anton Martyniv',
-                creator: 'CV Generator',
-                producer: 'html2pdf.js'
+    // Delay PDF generation to ensure DOM is ready
+    setTimeout(() => {
+        html2pdf()
+            .from(clone)
+            .set(opt)
+            .save()
+            .then(() => {
+                // Cleanup
+                document.body.removeChild(clone);
+                document.body.removeChild(loadingDiv);
+                showNotification('PDF exported successfully!', 'success');
+            })
+            .catch(error => {
+                console.error('PDF generation error:', error);
+                document.body.removeChild(clone);
+                document.body.removeChild(loadingDiv);
+                showNotification('Failed to export PDF. See console for details.', 'error');
             });
-            
-            return pdf;
-        }).save().then(() => {
-            // Remove loading indicator and restore state
-            document.body.removeChild(loadingDiv);
-            restoreOriginalState();
-            element.classList.remove('pdf-export-mode');
-            
-            // Show success message
-            showNotification('PDF exported successfully!', 'success');
-        }).catch(error => {
-            console.error('Error generating PDF:', error);
-            document.body.removeChild(loadingDiv);
-            restoreOriginalState();
-            element.classList.remove('pdf-export-mode');
-            showNotification('Failed to export PDF. Please try again.', 'error');
-        });
-            
-    } catch (error) {
-        console.error('Error in PDF export preparation:', error);
-        restoreOriginalState();
-        showNotification('Failed to prepare PDF export. Please try again.', 'error');
-    }
-    
-    // Helper function to restore original display states
-    function restoreOriginalState() {
-        if (githubSection && originalStates.github !== null) 
-            githubSection.style.display = originalStates.github;
-            
-        if (feedbackSection && originalStates.feedback !== null) 
-            feedbackSection.style.display = originalStates.feedback;
-            
-        if (browserInfoFooter && originalStates.footer !== null) 
-            browserInfoFooter.style.display = originalStates.footer;
-            
-        fixedButtons.forEach((button, index) => {
-            if (originalStates.buttons[index] !== undefined) {
-                button.style.display = originalStates.buttons[index];
-            } else {
-                button.style.display = '';
-            }
-        });
-    }
+    }, 500);
 }
 
 // Helper function to show notifications

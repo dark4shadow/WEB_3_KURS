@@ -425,20 +425,20 @@ body.dark-theme .repo-item {
 .pdf-export-mode {
     transform: none !important;
     position: static !important;
-    width: 210mm !important;
-    max-width: 210mm !important;
+    width: 200mm !important;  /* Reduced from 210mm to ensure fit within A4 margins */
+    max-width: 200mm !important;
     margin: 0 auto !important;
-    padding: 0 !important;
+    padding: 5mm !important;  /* Add padding to prevent edge cutting */
     box-shadow: none !important;
     border-radius: 0 !important;
-    overflow: visible !important; /* Changed from hidden to visible */
+    overflow: visible !important;
     page-break-inside: avoid;
     background: white !important;
     display: grid !important;
-    grid-template-columns: 70mm 1fr !important;
+    grid-template-columns: 65mm 1fr !important;  /* Adjusted column width */
     font-family: Arial, sans-serif !important;
     font-size: 0.9rem !important;
-    line-height: 1.4 !important; /* Increased from 1.3 to 1.4 */
+    line-height: 1.4 !important;
 }
 
 .pdf-export-mode .left-column {
@@ -447,13 +447,19 @@ body.dark-theme .repo-item {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     page-break-inside: avoid;
+    width: 65mm !important;  /* Explicit width to prevent cutting */
+    min-width: 65mm !important;
+    overflow: visible !important;
+    padding-left: 3mm !important;  /* Extra padding on the left */
 }
 
 .pdf-export-mode .right-column {
     background: white !important;
     color: black !important;
     page-break-inside: avoid;
-    padding-right: 10px !important; /* Added padding to prevent content from touching edge */
+    padding-right: 5mm !important;
+    padding-left: 5mm !important;
+    width: auto !important;
 }
 
 .pdf-export-mode .left-column section,
