@@ -157,8 +157,10 @@ document.addEventListener('DOMContentLoaded', () => {
         exportToPDF();
     });
 
-    // Друк
-    document.getElementById('print-cv').addEventListener('click', () => window.print());
+    const printBtn = document.getElementById('print-cv');
+    if (printBtn) {
+        printBtn.addEventListener('click', () => window.print());
+    }
 
     // GitHub
     loadGitHubProfile();
