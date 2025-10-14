@@ -1,22 +1,85 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Загальні утиліти
-    const toggleTheme = () => {
-        document.body.classList.toggle('dark-theme');
-        document.getElementById('cv-container').classList.toggle('dark-theme');
-        localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    const THEME_KEY = 'cv-theme';
+    const THEME_MODE_KEY = 'cv-theme-mode';
+    let autoThemeIntervalId = null;
+
+    const getAutoTheme = () => {
+        const hour = new Date().getHours();
+        return hour >= 7 && hour < 21 ? 'light' : 'dark';
     };
 
-    // Темна тема
-    const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', toggleTheme);
+    const applyTheme = (theme) => {
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-theme', isDark);
+        document.getElementById('cv-container').classList.toggle('dark-theme', isDark);
+    };
 
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    const currentHour = new Date().getHours();
-    const themeToApply = (currentHour >= 7 && currentHour < 21) ? 'light' : 'dark';
-    
-    if ((themeToApply === 'dark' && savedTheme === 'light') || (themeToApply === 'light' && savedTheme === 'dark')) {
-        toggleTheme();
-    }
+    const persistTheme = (theme, mode) => {
+        localStorage.setItem(THEME_KEY, theme);
+        localStorage.setItem(THEME_MODE_KEY, mode);
+    };
+
+    const syncThemeWithTime = () => {
+        const autoTheme = getAutoTheme();
+        const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+
+        if (currentTheme !== autoTheme) {
+            applyTheme(autoTheme);
+            persistTheme(autoTheme, 'auto');
+        }
+    };
+
+    const scheduleAutoThemeRefresh = () => {
+        if (autoThemeIntervalId) {
+            clearInterval(autoThemeIntervalId);
+            autoThemeIntervalId = null;
+        }
+
+        if (localStorage.getItem(THEME_MODE_KEY) !== 'auto') {
+            return;
+        }
+
+        syncThemeWithTime();
+        autoThemeIntervalId = setInterval(syncThemeWithTime, 60 * 1000);
+    };
+
+    const initTheme = () => {
+        const savedMode = localStorage.getItem(THEME_MODE_KEY);
+        const savedTheme = localStorage.getItem(THEME_KEY);
+
+        if (savedMode === 'manual' && (savedTheme === 'light' || savedTheme === 'dark')) {
+            applyTheme(savedTheme);
+            return;
+        }
+
+        const autoTheme = getAutoTheme();
+        applyTheme(autoTheme);
+        persistTheme(autoTheme, 'auto');
+    };
+
+    const changeTheme = (modeOverride) => {
+        if (modeOverride === 'auto') {
+            const autoTheme = getAutoTheme();
+            applyTheme(autoTheme);
+            persistTheme(autoTheme, 'auto');
+            scheduleAutoThemeRefresh();
+            return;
+        }
+
+        const nextTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+        applyTheme(nextTheme);
+        persistTheme(nextTheme, 'manual');
+        scheduleAutoThemeRefresh();
+    };
+
+    initTheme();
+    scheduleAutoThemeRefresh();
+
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.title = 'Toggle theme (Shift+Click to follow local time)';
+    themeToggle.addEventListener('click', (event) => {
+        changeTheme(event.shiftKey ? 'auto' : undefined);
+    });
 
     // Інформація про браузер
     const browserInfo = {
