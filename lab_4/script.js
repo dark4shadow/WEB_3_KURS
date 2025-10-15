@@ -1,3 +1,5 @@
+let isExportingPdf = false;
+
 document.addEventListener('DOMContentLoaded', () => {
     const THEME_KEY = 'cv-theme';
     const THEME_MODE_KEY = 'cv-theme-mode';
@@ -105,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(comments => {
             const commentsSection = document.createElement('section');
+            commentsSection.id = 'api-feedback';
             commentsSection.innerHTML = `
                 <h2 class="section-header">Feedback</h2>
                 <ul class="experience-list">
@@ -150,11 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Експорт PDF
+
     document.getElementById('export-pdf').addEventListener('click', async () => {
         if (!window.html2pdf) {
             await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
         }
-        exportToPDF();
+        await exportToPDF();
     });
 
     const printBtn = document.getElementById('print-cv');
@@ -225,81 +229,104 @@ async function loadGitHubProfile() {
     }
 }   
 
-function exportToPDF() {
-    // Create a clone of the CV container to prevent modifying the original
-    const cvContainer = document.getElementById('cv-container');
-    const clone = cvContainer.cloneNode(true);
-    
-    // Apply PDF export styles to the clone
-    clone.classList.add('pdf-export-mode');
-    
-    // Remove elements that shouldn't be in the PDF
-    const elementsToRemove = ['github-section', 'browser-info', 'feedback-modal'];
-    elementsToRemove.forEach(id => {
-        const element = clone.querySelector('#' + id);
-        if (element) element.remove();
-    });
-    
-    // Remove feedback section by finding it through its header
-    const sections = clone.querySelectorAll('section');
-    sections.forEach(section => {
-        const header = section.querySelector('h2');
-        if (header && header.textContent.includes('Feedback')) {
-            section.remove();
+async function exportToPDF() {
+    if (isExportingPdf) {
+        return;
+    }
+
+    isExportingPdf = true;
+    const loadingOverlay = showPdfLoadingOverlay('Generating PDF...');
+
+    try {
+        // Load required libraries
+        if (!window.jspdf || !window.html2canvas) {
+            await Promise.all([
+                loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+                loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+            ]);
         }
-    });
-    
-    // Append the clone to body but make it invisible
-    clone.style.position = 'absolute';
-    clone.style.left = '-9999px';
-    document.body.appendChild(clone);
-    
-    // Show loading indicator
-    const loadingDiv = document.createElement('div');
-    loadingDiv.id = 'pdf-loading';
-    loadingDiv.innerHTML = `
-        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    background: rgba(0,0,0,0.8); color: white; padding: 20px; 
-                    border-radius: 8px; z-index: 10000; text-align: center;">
-            <div class="loading-spinner" style="margin: 0 auto 10px; width: 30px; height: 30px;"></div>
-            <p>Generating PDF...</p>
-        </div>
-    `;
-    document.body.appendChild(loadingDiv);
-    
-    // Configure PDF options
-    const opt = {
-        margin: [10, 10, 10, 10],
-        filename: 'Anton-Martyniv_CV.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { 
-            scale: 2, 
+
+        const { jsPDF } = window.jspdf;
+        const cvContainer = document.getElementById('cv-container');
+        
+        // Hide elements that shouldn't be in PDF
+        const hiddenElements = hideElementsForPdf([
+            '#github-section', 
+            '#browser-info', 
+            '#feedback-modal', 
+            '#api-feedback', 
+            '.fixed-button'
+        ]);
+
+        // Add PDF export mode class
+        cvContainer.classList.add('pdf-export-mode');
+        document.body.style.background = 'white';
+
+        // Wait for any animations/transitions to complete
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Create canvas from HTML
+        const canvas = await html2canvas(cvContainer, {
+            scale: 2,
             useCORS: true,
-            logging: true,
-            letterRendering: true
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    
-    // Delay PDF generation to ensure DOM is ready
-    setTimeout(() => {
-        html2pdf()
-            .from(clone)
-            .set(opt)
-            .save()
-            .then(() => {
-                // Cleanup
-                document.body.removeChild(clone);
-                document.body.removeChild(loadingDiv);
-                showNotification('PDF exported successfully!', 'success');
-            })
-            .catch(error => {
-                console.error('PDF generation error:', error);
-                document.body.removeChild(clone);
-                document.body.removeChild(loadingDiv);
-                showNotification('Failed to export PDF. See console for details.', 'error');
-            });
-    }, 500);
+            logging: false,
+            backgroundColor: '#ffffff',
+            windowWidth: 1000,
+            windowHeight: cvContainer.scrollHeight,
+            onclone: (clonedDoc) => {
+                const clonedContainer = clonedDoc.getElementById('cv-container');
+                clonedContainer.style.boxShadow = 'none';
+                clonedContainer.style.margin = '0';
+                clonedContainer.style.maxWidth = '1000px';
+            }
+        });
+
+        // Calculate PDF dimensions
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Create PDF
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+            compress: true
+        });
+
+        let heightLeft = imgHeight;
+        let position = 0;
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+        // Add first page
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, '', 'FAST');
+        heightLeft -= pageHeight;
+
+        // Add additional pages if needed
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight, '', 'FAST');
+            heightLeft -= pageHeight;
+        }
+
+        // Save PDF
+        pdf.save('Anton-Martyniv_CV.pdf');
+        
+        // Restore visibility
+        cvContainer.classList.remove('pdf-export-mode');
+        document.body.style.background = '';
+        restoreElementsVisibility(hiddenElements);
+
+        showNotification('PDF exported successfully!', 'success');
+
+    } catch (error) {
+        console.error('PDF generation error:', error);
+        showNotification('Failed to export PDF: ' + error.message, 'error');
+    } finally {
+        hidePdfLoadingOverlay(loadingOverlay);
+        isExportingPdf = false;
+    }
 }
 
 // Helper function to show notifications
@@ -370,4 +397,46 @@ function addGithubToggle() {
     }
     
     toggleHeader.appendChild(toggleBtn);
+}
+
+function showPdfLoadingOverlay(message) {
+    const overlay = document.createElement('div');
+    overlay.id = 'pdf-loading';
+    overlay.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                    background: rgba(0,0,0,0.8); color: white; padding: 20px;
+                    border-radius: 8px; z-index: 10000; text-align: center;">
+            <div class="loading-spinner" style="margin: 0 auto 10px; width: 30px; height: 30px;"></div>
+            <p>${message}</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+}
+
+function hidePdfLoadingOverlay(overlay) {
+    if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+    }
+}
+
+function hideElementsForPdf(selectors) {
+    const affected = [];
+    selectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(element => {
+            affected.push({ element, inlineStyle: element.getAttribute('style') });
+            element.style.display = 'none';
+        });
+    });
+    return affected;
+}
+
+function restoreElementsVisibility(affected) {
+    affected.forEach(({ element, inlineStyle }) => {
+        if (inlineStyle === null) {
+            element.removeAttribute('style');
+        } else {
+            element.setAttribute('style', inlineStyle);
+        }
+    });
 }
